@@ -121,7 +121,7 @@ static float decode_humidity(dht_model_t model, uint8_t b0, uint8_t b1) {
 //
 
 void dht_init(dht_t *dht, dht_model_t model, PIO pio, uint8_t data_pin, bool pull_up) {
-    assert(pio == pio0 || pio == pio1);
+    assert(pio == pio0 || pio == pio1 || pio == pio2);
 
     memset(dht, 0, sizeof(dht_t));
     dht->model = model;
