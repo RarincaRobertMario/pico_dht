@@ -4,6 +4,12 @@ This is a C library for working with DHT temperature & humidity sensors on the R
 
 A PIO state machine is used to communicate with the sensor, leaving the CPU cores available for other tasks. Sounds like overkill, but hey: it's bit banging and what the PIOs are designed for!
 
+## Installing
+
+1. Download files somewhere
+2. include(/path/to/folder/pico_dht/Pico_DHT.cmake) and target_link_libraries(your_target dht)
+3. In your c file: #include <dht.h>
+
 ## Example
 
 The example program prints temperature and humidity every 2 seconds.
