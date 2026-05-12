@@ -138,7 +138,7 @@ static float decode_humidity(dht_model_t model, uint8_t b0, uint8_t b1) {
 static int pio_offset[3] = {-1, -1, -1}; /// PIO instruction offset
 
 void dht_init(dht_t *dht, dht_model_t model, PIO pio, uint8_t data_pin, bool pull_up) {
-    int pio = (pio == pio0) ? 0 : (pio == pio1) ? 1 : 2; 
+    int pio_idx = (pio == pio0) ? 0 : (pio == pio1) ? 1 : 2; 
     
     memset(dht, 0, sizeof(dht_t));
     dht->model = model;
