@@ -120,19 +120,41 @@ static float decode_humidity(dht_model_t model, uint8_t b0, uint8_t b1) {
 // public interface
 //
 
-void dht_init(dht_t *dht, dht_model_t model, PIO pio, uint8_t data_pin, bool pull_up) {
-    assert(pio == pio0 || pio == pio1 || pio == pio2);
+// void dht_init(dht_t *dht, dht_model_t model, PIO pio, uint8_t data_pin, bool pull_up) {
+//     assert(pio == pio0 || pio == pio1 || pio == pio2);
 
+//     memset(dht, 0, sizeof(dht_t));
+//     dht->model = model;
+//     dht->pio = pio;
+//     dht->pio_program_offset = pio_add_program(pio, &dht_program);
+//     dht->sm = pio_claim_unused_sm(pio, true /* required */);
+//     dht->dma_chan = dma_claim_unused_channel(true /* required */);
+//     dht->data_pin = data_pin;
+
+//     pio_gpio_init(pio, data_pin);
+//     gpio_set_pulls(data_pin, pull_up, false /* down */);
+// }
+
+static int pio_offset[3] = {-1, -1, -1}; /// PIO instruction offset
+
+void dht_init(dht_t *dht, dht_model_t model, PIO pio, uint8_t data_pin, bool pull_up) {
+    int pio = (pio == pio0) ? 0 : (pio == pio1) ? 1 : 2; 
+    
     memset(dht, 0, sizeof(dht_t));
     dht->model = model;
     dht->pio = pio;
-    dht->pio_program_offset = pio_add_program(pio, &dht_program);
-    dht->sm = pio_claim_unused_sm(pio, true /* required */);
-    dht->dma_chan = dma_claim_unused_channel(true /* required */);
+
+    if (pio_offset[pio_idx] == -1) {
+        pio_offset[pio_idx] = pio_add_program(pio, &dht_program);
+    }
+    dht->pio_program_offset = pio_offset[pio_idx];
+
+    dht->sm = pio_claim_unused_sm(pio, true);
+    dht->dma_chan = dma_claim_unused_channel(true);
     dht->data_pin = data_pin;
 
     pio_gpio_init(pio, data_pin);
-    gpio_set_pulls(data_pin, pull_up, false /* down */);
+    gpio_set_pulls(data_pin, pull_up, false);
 }
 
 void dht_deinit(dht_t *dht) {
